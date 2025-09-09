@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Додати годинник і показати на сайті</title>
+  <style>
+    /* Твої стилі для продуктів */
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .products { display: flex; flex-wrap: wrap; gap: 20px; }
+    .product { border: 1px solid #ccc; padding: 10px; width: 300px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea, select { width: 100%; margin-top: 5px; padding: 5px; }
+    button { margin-top: 15px; padding: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>Додати новий годинник</h2>
+
+<label>Назва</label>
+<input type="text" id="name">
+
+<label>Ціна (zł)</label>
+<input type="number" id="price">
+
+<label>Зображення 1 (URL)</label>
+<input type="text" id="img1">
+
+<label>Зображення 2 (URL)</label>
+<input type="text" id="img2">
+
+<label>Зображення 3 (URL)</label>
+<input type="text" id="img3">
+
+<label>Опис</label>
+<textarea id="description"></textarea>
+
+<label>Колір (назва)</label>
+<input type="text" id="colorName">
+
+<label>Колір (hex)</label>
+<input type="color" id="colorHex" value="#1e3a8a">
+
+<label>Розмір 1</label>
+<input type="text" id="size1" placeholder="42x36 mm" value="42x36 мм">
+
+<label>Розмір 2</label>
+<input type="text" id="size2" placeholder="36x28 mm" value="36x28 мм">
+
+<label>Наявність</label>
+<select id="stock">
+  <option value="В наявності" selected>В наявності</option>
+  <option value="Немає в наявності">Немає в наявності</option>
+</select>
+
+<button onclick="addProduct()">Додати годинник на сайт</button>
+
+<h2>Годинники на сайті:</h2>
+<div class="products" id="products-container">
+  <!-- Тут з'являтимуться годинники -->
+</div>
+
+<script>
+function addProduct() {
+  const name = document.getElementById("name").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const img1 = document.getElementById("img1").value.trim();
+  const img2 = document.getElementById("img2").value.trim();
+  const img3 = document.getElementById("img3").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const colorName = document.getElementById("colorName").value.trim();
+  const colorHex = document.getElementById("colorHex").value;
+  const size1 = document.getElementById("size1").value.trim();
+  const size2 = document.getElementById("size2").value.trim();
+  const stock = document.getElementById("stock").value;
+
+  if (!name || !price || !img1) {
+    alert("Будь ласка, заповніть обов'язкові поля: Назва, Ціна, Зображення 1");
+    return;
+  }
+
+  const container = document.getElementById("products-container");
+
+  // Створюємо елемент продукту
+  const productDiv = document.createElement("div");
+  productDiv.className = "product";
+  productDiv.setAttribute("data-name", name);
+  productDiv.setAttribute("data-price", price);
+
+  productDiv.innerHTML = `
+    <div class="image-carousel">
+      <div class="image-carousel-inner">
+        <img src="${img1}" alt="${name} 1" data-gallery="men1" />
+        <img src="${img2}" alt="${name} 2" data-gallery="men1" />
+        <img src="${img3}" alt="${name} 3" data-gallery="men1" />
+      </div>
+    </div>
+    <div class="carousel-controls">
+      <button class="prev"></button>
+      <button class="next"></button>
+    </div>
+    <p class="product-description">${description}</p>
+    <p class="product-color">
+      <strong>Kolor:</strong> ${colorName}
+      <span class="color-dot" style="background-color: ${colorHex};"></span>
+    </p>
+    <div class="size-selector">
+      <div class="watch-size-container">
+        <span class="watch-size-label">Rozmiar zegarka: </span>
+        <button class="size-btn active" data-size="${size1}">${size1}</button>
+        <button class="size-btn" data-size="${size2}">${size2}</button>
+      </div>
+    </div>
+    <p class="product-stock">
+      <span class="stock-dot"><span class="stock-dot-inner"></span></span>
+      ${stock}
+    </p>
+    <p class="product-price"> ${price} zł</p>
+    <button class="add-to-cart-btn">Dodaj do koszyka</button>
+  `;
+
+  container.appendChild(productDiv);
+
+  // Очистити форму
+  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  document.getElementById("stock").value = "В наявності";
+  document.getElementById("colorHex").value = "#1e3a8a";
+}
+</script>
+
+</body>
+</html>

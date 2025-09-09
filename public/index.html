@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>watch_old_money</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Great+Vibes&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+  
+
+
+  <div class="glow-center"></div>
+  <div class="promo-banner">
+    <div class="promo-text">
+      <h2>Lekka waga, <span>wodoszczelność,</span> bateria<span>na lata</span></h2>
+      <p>Klasyczne Casio to wolność od drobiazgów i pewność, że zawsze jesteś w rytmie!</p>
+    </div>
+    <div class="promo-watches">
+      <img src="https://i.postimg.cc/QxhPD4g6/casio-banner-resized.png" alt="watch" class="watch-img watch-left" />
+      <img src="https://i.postimg.cc/QxhPD4g6/casio-banner-resized.png" alt="watch" class="watch-img watch-right" />
+    </div>
+  </div>
+
+  <header>
+    <h1>watch_old_money</h1>
+    <p>Stylowe zegarki dla ceniących klasykę</p>
+    <a href="#catalog">Zobacz katalog</a>
+    <button id="cart-btn">Koszyk (0)</button>
+  </header>
+
+<!-- ГОДИННИКИ -->
+<section id="catalog">
+
+</section>
+
+  <section class="about-section">
+  <h2>O nas</h2>
+  <p class="about-text">
+  Watch Shop N°1 — to coś więcej niż sklep. Dokładamy wszelkich starań, aby dać poczucie stylu i pewności siebie.
+  Nasze zegarki wyróżniają się wysoką jakością, gwarancją i szybką dostawą. Dbamy o to, aby każdy klient był zadowolony
+  z zakupów i obsługi na europejskim poziomie.
+  </p>
+  <div class="about-cards">
+    <div class="about-card">
+      <span class="icon">⌚</span>
+      <p>Ponad <b>2000+</b> zadowolonych klientów</p>
+    </div>
+    <div class="about-card">
+      <span class="icon">🚚</span>
+      <p>
+        Dostawa 1-2 dni <br>
+        <img src="https://flagcdn.com/w20/pl.png" alt="PL" class="flag">
+        <img src="https://flagcdn.com/w20/ua.png" alt="UA" class="flag">
+        <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="flag">
+      </p>
+    </div>
+    <div class="about-card">
+      <span class="icon">✅</span>
+      <p>Udzielamy gwarancji</p>
+    </div>
+    <div class="about-card">
+      <span class="icon">🌍</span>
+      <p>
+        Odpowiadamy
+        <img src="https://flagcdn.com/w20/pl.png" alt="PL" class="flag">
+        <img src="https://flagcdn.com/w20/ua.png" alt="UA" class="flag">
+      </p>
+    </div>
+    <div class="about-card">
+      <span class="icon">💬</span>
+      <p>Online 24/7</p>
+    </div>
+  </div>
+</section>
+
+
+  <section id="contact">
+  <div class="contact-box">
+    <h2 class="contact-title">Związane z nami</h2>
+    <p class="contact-subtitle">Jesteśmy zawsze online dla Ciebie 24/7</p>
+    <div class="contact-links">
+      <a href="https://www.instagram.com/watch_old_money/?hl=en" target="_blank" class="contact-btn insta">
+        Instagram
+      </a>
+      <a href="https://t.me/yourchannel" target="_blank" class="contact-btn tg">
+        Telegram
+      </a>
+    </div>
+  </div>
+</section>
+
+  <footer>
+    © 2025 watch_old_money. Wszelkie prawa zastrzeżone.
+  </footer>
+
+  <div id="cart-modal">
+    <div class="cart-content">
+      <h2>Twój koszyk</h2>
+      <div id="cart-items"></div>
+      <p><strong>Całkowita kwota: </strong> <span id="total">zł 0</span></p>
+      <div class="cart-actions">
+        <button class="clear-btn" onclick="clearCart()">Posprzątać</button>
+        <button class="checkout-btn" onclick="checkout()">Wydać</button>
+        <button class="close-btn" onclick="toggleCart()">Zamknąć</button>
+      </div>
+    </div>
+  </div>
+  <div id="checkout-form-modal" class="checkout-form-overlay">
+  <div class="checkout-form-container">
+    <button class="close-btn" onclick="closeCheckoutForm()">×</button>
+    <h2>Złożenie zamówienia</h2>
+    <form id="checkout-form" onsubmit="submitOrder(event)">
+      <input type="text" name="lastname" placeholder="Прізвище" required />
+      <input type="text" name="firstname" placeholder="Ім’я" required />
+      <input type="tel" name="phone" placeholder="Numer telefonu (+48...)" pattern="^\+48\d{9}$" title="Формат: +48999111222" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="text" name="address" placeholder="Adres poczty InPost" required />
+      <button type="submit">Przejdź do płatności</button>
+    </form>
+  </div>
+</div>
+  <div id="add-to-cart-popup">
+  Produkt został dodany do koszyka
+  <a href="#" id="open-cart-link">Otwarte</a>
+</div>
+  <!-- Модалка "Дякуємо за покупку" -->
+<div id="order-success-modal" class="order-success-overlay">
+  <div class="order-success-container">
+    <button class="order-success-close" onclick="closeSuccessModal()">×</button>
+    <h2 class="order-success-title">Dziękujemy za zakup!</h2>
+    <p class="order-success-text">
+      Twój numer zamówienia: <strong id="order-success-id">837807</strong>
+    </p>
+    <p class="order-success-note">Nasz operator skontaktuje się z Tobą w ciągu dnia.</p>
+  </div>
+</div>
+  <script src="script.js"></script>
+</body>
+</html>
