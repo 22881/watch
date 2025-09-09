@@ -28,15 +28,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ================= Google Sheets =================
 async function writeToGoogleSheet(data) {
   try {
+    // створюємо об’єкт документа
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
 
+    // авторизація
     await doc.useServiceAccountAuth({
       client_email: creds.client_email,
-      private_key: creds.private_key.replace(/\\n/g, '\n'),
+      private_key: creds.private_key.replace(/\\n/g, '\n')
     });
 
-    await doc.loadInfo(); // загружає метадані таблиці
-    const sheet = doc.sheetsByIndex[0]; // перший лист
+    // завантажуємо інформацію про листи
+    await doc.loadInfo();
+
+    // вибираємо перший лист
+    const sheet = doc.sheetsByIndex[0];
+
+    console.log('📤 Відправляю в Google Sheets:', data);
+
+    // додаємо рядок
     await sheet.addRow({
       "Дата": new Date().toLocaleString('uk-UA'),
       "Номер замовлення": data.orderId,
@@ -50,9 +59,9 @@ async function writeToGoogleSheet(data) {
       "Статус": 'Оплата пройшла'
     });
 
-    console.log('✅ Дані записані в Google Таблицю');
+    console.log('✅ Рядок додано в Google Sheets');
   } catch (err) {
-    console.error('❌ Google Sheets запис не вдався:', err);
+    console.error('❌ Google Sheets запис не вдався:', err.message);
   }
 }
 
@@ -141,6 +150,7 @@ const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => {
   console.log(`✅ Сервер працює на порті ${PORT}`);
 });
+
 
 
 
