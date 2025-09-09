@@ -28,11 +28,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ================= Google Sheets =================
 async function writeToGoogleSheet(data) {
   const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-  await doc.useServiceAccountAuth(creds);
+
+  await doc.useServiceAccountAuth({
+    client_email: creds.client_email,
+    private_key: creds.private_key.replace(/\\n/g, '\n'),
+  });
+
   await doc.loadInfo();
 
   const sheet = doc.sheetsByIndex[0];
-
   await sheet.addRow({
     "Дата": new Date().toLocaleString('uk-UA'),
     "Номер замовлення": data.orderId,
@@ -131,3 +135,4 @@ const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => {
   console.log(`✅ Сервер працює на порті ${PORT}`);
 });
+
