@@ -103,9 +103,9 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error('❌ Webhook error:', err.message);
+    console.error('❌ Webhook signature error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -123,8 +123,11 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
       product: session.metadata.product
     };
 
+    console.log('📤 Stripe webhook отримав дані:', orderData);
+
     try {
       await writeToGoogleSheet(orderData);
+      console.log('✅ Google Sheets запис успішний');
     } catch (err) {
       console.error('❌ Google Sheets запис не вдався:', err.message);
     }
@@ -138,5 +141,6 @@ const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => {
   console.log(`✅ Сервер працює на порті ${PORT}`);
 });
+
 
 
