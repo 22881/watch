@@ -27,30 +27,33 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ================= Google Sheets =================
 async function writeToGoogleSheet(data) {
-  const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
+  try {
+    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
 
-  await doc.useServiceAccountAuth({
-    client_email: creds.client_email,
-    private_key: creds.private_key.replace(/\\n/g, '\n'),
-  });
+    await doc.useServiceAccountAuth({
+      client_email: creds.client_email,
+      private_key: creds.private_key.replace(/\\n/g, '\n'),
+    });
 
-  await doc.loadInfo();
+    await doc.loadInfo(); // загружає метадані таблиці
+    const sheet = doc.sheetsByIndex[0]; // перший лист
+    await sheet.addRow({
+      "Дата": new Date().toLocaleString('uk-UA'),
+      "Номер замовлення": data.orderId,
+      "Ім’я": data.firstname,
+      "Прізвище": data.lastname,
+      "Телефон": data.phone,
+      "Email": data.email,
+      "Адреса": data.address,
+      "Назва товару": data.product,
+      "Розмір": data.size,
+      "Статус": 'Оплата пройшла'
+    });
 
-  const sheet = doc.sheetsByIndex[0];
-  await sheet.addRow({
-    "Дата": new Date().toLocaleString('uk-UA'),
-    "Номер замовлення": data.orderId,
-    "Ім’я": data.firstname,
-    "Прізвище": data.lastname,
-    "Телефон": data.phone,
-    "Email": data.email,
-    "Адреса": data.address,
-    "Назва товару": data.product,
-    "Розмір": data.size,
-    "Статус": 'Оплата пройшла'
-  });
-
-  console.log('✅ Дані записані в Google Таблицю');
+    console.log('✅ Дані записані в Google Таблицю');
+  } catch (err) {
+    console.error('❌ Google Sheets запис не вдався:', err);
+  }
 }
 
 // ================= Stripe Checkout =================
@@ -135,4 +138,5 @@ const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => {
   console.log(`✅ Сервер працює на порті ${PORT}`);
 });
+
 
