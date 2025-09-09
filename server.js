@@ -4,7 +4,7 @@ const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const bodyParser = require('body-parser');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const creds = require('./credentials.json'); // Google Service Account
+
 const path = require('path');
 
 const app = express();
@@ -28,24 +28,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ================= Google Sheets =================
 async function writeToGoogleSheet(data) {
   try {
-    // створюємо об’єкт документа
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
 
-    // авторизація
     await doc.useServiceAccountAuth({
-      client_email: creds.client_email,
-      private_key: creds.private_key.replace(/\\n/g, '\n')
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     });
 
-    // завантажуємо інформацію про листи
     await doc.loadInfo();
-
-    // вибираємо перший лист
     const sheet = doc.sheetsByIndex[0];
 
-    console.log('📤 Відправляю в Google Sheets:', data);
-
-    // додаємо рядок
     await sheet.addRow({
       "Дата": new Date().toLocaleString('uk-UA'),
       "Номер замовлення": data.orderId,
@@ -150,6 +142,7 @@ const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => {
   console.log(`✅ Сервер працює на порті ${PORT}`);
 });
+
 
 
 
